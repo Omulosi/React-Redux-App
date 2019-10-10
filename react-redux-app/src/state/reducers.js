@@ -1,4 +1,4 @@
-// import { combineReducers } from 'redux';
+import { combineReducers } from 'redux';
 import * as actions from './actions';
 
 const initialState = {
@@ -7,8 +7,15 @@ const initialState = {
   data: {},
 }
 
-export const weatherReducer = (state=initialState, action) => {
+const weatherReducer = (state=initialState, action) => {
   switch(action.type) {
+    case actions.FETCH_WEATHER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: action.payload
+      }
+
     case actions.FETCH_WEATHER_START:
       return {
         ...state,
@@ -19,18 +26,29 @@ export const weatherReducer = (state=initialState, action) => {
     case actions.FETCH_WEATHER_FAIL:
       return {
         ...state,
-        error: action.payload
+        loading: false,
+        error: action.payload.message
       }
 
-    case action.FETCH_WEATHER_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        data: action.payload
-      }
 
     default:
       return state;
   }
 }
 
+const updateLocationReducer = (state='Nairobi', action) => {
+  switch(action.type) {
+    case actions.ON_SUBMIT:
+      return action.payload
+
+    default:
+      return state;
+  }
+}
+
+const reducers = combineReducers({
+  state: weatherReducer,
+  location: updateLocationReducer
+})
+
+export default reducers;

@@ -1,21 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import './App.css';
-
 import Header from './components/Header';
 import SearchForm from './components/SearchForm';
 import WeatherCard from './components/WeatherCard';
+import * as actionCreators from './state/actionCreators';
 
 
 const App = (props) => {
 
-  const { data, error, loading } = props.state;
+  useEffect(() => {
+    props.getWeatherData(props.location);
+  }, [props.location]);
+
   return (
     <div>
       <Header />
-      <SearchForm getForecast={props.getForecast}/>
-      <WeatherCard data={data} error={error} loading={loading}/>
+      <SearchForm />
+      <WeatherCard />
     </div>
   )
 }
 
-export default App;
+export default connect(
+  state => state,
+  actionCreators
+)(App);

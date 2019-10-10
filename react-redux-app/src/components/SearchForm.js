@@ -1,45 +1,37 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import * as actionCreators from '../state/actionCreators';
+import { connect } from 'react-redux';
+import * as actions from '../state/actions';
 
-class SearchForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      location: ''
-    }
-  }
+const SearchForm = (props) =>  {
 
-  handleSubmit = (e) => {
+  const [location, setLocation] = useState('');
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.getForecast(this.state.location);
+    const newLocation = location;
+    props.updateLocation(newLocation);
+    setLocation('');
   }
 
-  handleChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
+  const handleChange = (e) => {
+      setLocation(e.target.value);
   }
 
-  render() {
-    
-    return (
-      <div className="search-form">
-        <form id="user-location" onSubmit={this.handleSubmit}>
-          <input type="text" name="location" id="location" value={this.state.location}
-            onChange={this.handleChange}/>
-          <button type="submit" className="btn">Search</button>
-        </form>
-      </div>
-    );
-  }
+  return (
+    <div className="search-form">
+      <form id="user-location" onSubmit={handleSubmit}>
+        <input type="text" name="location" id="location" value={location}
+          onChange={handleChange}/>
+        <button type="submit" className="btn">Search</button>
+      </form>
+    </div>
+  );
 }
 
 
-// Proptypes
-SearchForm.propTypes = {
-  getForecast: PropTypes.func.isRequired
-}
-
-export default SearchForm;
-
+export default connect(
+  state => state,
+  actionCreators
+)(SearchForm);
 
